@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Redirection SPA : redirige toutes les routes vers index.html pour le routage client
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
