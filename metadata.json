@@ -1,0 +1,6 @@
+{
+  "name": "ImmoGestion SaaS - Gestion Immobilière",
+  "description": "Plateforme SaaS complète de gestion immobilière : suivi du parc de biens, baux, locataires, quittances automatisées, demandes de maintenance, calculs de rentabilité et assistant IA Gemini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
