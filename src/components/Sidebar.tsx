@@ -1,7 +1,9 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import {
   LayoutDashboard,
   Building,
+  Building2,
   Users,
   Wallet,
   Wrench,
@@ -92,25 +94,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
       
       {/* Mobile Horizontal Scrollable Navigation Bar */}
       <div className="lg:hidden flex items-center overflow-x-auto p-2.5 space-x-1.5 border-b border-slate-800 no-scrollbar">
-        <button
+        <motion.button
+          whileHover={{ scale: 1.03, opacity: 0.9 }}
+          whileTap={{ scale: 0.97 }}
           onClick={() => {
             if (onBackToLanding) onBackToLanding();
             else setActiveTab('landing');
           }}
-          className="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-emerald-400 border border-slate-700 whitespace-nowrap flex-shrink-0"
+          className="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-emerald-400 border border-slate-700 whitespace-nowrap flex-shrink-0 cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Retour Site</span>
-        </button>
+        </motion.button>
 
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
           return (
-            <button
+            <motion.button
               key={item.id}
+              whileHover={{ scale: 1.03, opacity: 0.95 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center space-x-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
+              className={`flex items-center space-x-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors flex-shrink-0 cursor-pointer ${
                 isActive
                   ? 'bg-emerald-500 text-slate-950 font-black shadow-md'
                   : 'bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-slate-700/50'
@@ -118,7 +124,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <Icon className={`w-4 h-4 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
               <span>{item.label}</span>
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -127,17 +133,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="hidden lg:flex flex-col h-full p-4 justify-between space-y-6">
         <nav className="space-y-1.5">
           
+          {/* Top Sidebar Brand Logo & Typography (ImmoGestion by Blink Services) */}
+          <div className="px-2 py-3 mb-2 border-b border-slate-800/80 flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0 shadow-sm">
+              <Building2 className="w-4 h-4" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold text-sm tracking-tight text-white leading-tight">
+                Immo<span className="text-emerald-400 font-extrabold">Gestion</span>
+              </span>
+              <span className="text-[10px] text-slate-400 font-medium tracking-wide">
+                by Blink Services
+              </span>
+            </div>
+          </div>
+
           {/* Back to Public Landing Link */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02, x: 2, opacity: 0.95 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => {
               if (onBackToLanding) onBackToLanding();
               else setActiveTab('landing');
             }}
-            className="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition-all mb-3 group"
+            className="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition-colors mb-3 group cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
             <span>← Page d'Accueil Public</span>
-          </button>
+          </motion.button>
 
           <div className="px-3 py-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
             Menu Navigation
@@ -148,10 +171,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             const isActive = activeTab === item.id;
 
             return (
-              <button
+              <motion.button
                 key={item.id}
+                whileHover={{ scale: 1.02, x: 3, opacity: 0.95 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors group cursor-pointer ${
                   isActive
                     ? item.highlight
                       ? 'bg-purple-600/20 text-purple-300 border border-purple-500/40 shadow-sm'
@@ -183,7 +209,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     {item.badge.count}
                   </span>
                 )}
-              </button>
+              </motion.button>
             );
           })}
         </nav>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { LandingPageView } from './components/LandingPageView';
@@ -16,6 +17,7 @@ import { TaxReportView } from './components/TaxReportView';
 import { SettingsView } from './components/SettingsView';
 import { AuthModal } from './components/AuthModal';
 import { PaymentModal } from './components/PaymentModal';
+import { Footer } from './components/Footer';
 
 import {
   Property,
@@ -420,6 +422,13 @@ export default function App() {
           }}
         />
 
+        {/* Grand Footer */}
+        <Footer
+          onNavigate={(tab) => handleNavigate(tab)}
+          onOpenAuthModal={handleOpenAuthModal}
+          onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
+        />
+
         {/* Global Auth Modal */}
         <AuthModal
           isOpen={isAuthModalOpen}
@@ -485,104 +494,121 @@ export default function App() {
         {/* Dynamic View Panel */}
         <main className="flex-1 min-w-0">
           
-          {activeTab === 'dashboard' && (
-            <DashboardView
-              properties={properties}
-              tenants={tenants}
-              payments={payments}
-              maintenanceTickets={maintenanceTickets}
-              setActiveTab={setActiveTab}
-              onOpenQuittanceModal={() => handleOpenQuittance()}
-              onSelectProperty={(p) => setSelectedProperty(p)}
-            />
-          )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {activeTab === 'dashboard' && (
+                <DashboardView
+                  properties={properties}
+                  tenants={tenants}
+                  payments={payments}
+                  maintenanceTickets={maintenanceTickets}
+                  setActiveTab={setActiveTab}
+                  onOpenQuittanceModal={() => handleOpenQuittance()}
+                  onSelectProperty={(p) => setSelectedProperty(p)}
+                />
+              )}
 
-          {activeTab === 'properties' && (
-            <PropertiesView
-              properties={properties}
-              tenants={tenants}
-              onOpenAddModal={() => {
-                setEditingProperty(null);
-                setIsPropertyFormOpen(true);
-              }}
-              onEditProperty={(p) => {
-                setEditingProperty(p);
-                setIsPropertyFormOpen(true);
-              }}
-              onDeleteProperty={handleDeleteProperty}
-              onSelectProperty={(p) => setSelectedProperty(p)}
-              onOpenAiForProperty={handleOpenAiForProperty}
-            />
-          )}
+              {activeTab === 'properties' && (
+                <PropertiesView
+                  properties={properties}
+                  tenants={tenants}
+                  onOpenAddModal={() => {
+                    setEditingProperty(null);
+                    setIsPropertyFormOpen(true);
+                  }}
+                  onEditProperty={(p) => {
+                    setEditingProperty(p);
+                    setIsPropertyFormOpen(true);
+                  }}
+                  onDeleteProperty={handleDeleteProperty}
+                  onSelectProperty={(p) => setSelectedProperty(p)}
+                  onOpenAiForProperty={handleOpenAiForProperty}
+                />
+              )}
 
-          {activeTab === 'tenants' && (
-            <TenantsView
-              tenants={tenants}
-              properties={properties}
-              onAddTenant={handleAddTenant}
-              onEditTenant={handleEditTenant}
-              onDeleteTenant={handleDeleteTenant}
-              onOpenQuittanceModal={() => handleOpenQuittance()}
-              onOpenAiForTenant={() => setActiveTab('ai_assistant')}
-            />
-          )}
+              {activeTab === 'tenants' && (
+                <TenantsView
+                  tenants={tenants}
+                  properties={properties}
+                  onAddTenant={handleAddTenant}
+                  onEditTenant={handleEditTenant}
+                  onDeleteTenant={handleDeleteTenant}
+                  onOpenQuittanceModal={() => handleOpenQuittance()}
+                  onOpenAiForTenant={() => setActiveTab('ai_assistant')}
+                />
+              )}
 
-          {activeTab === 'finances' && (
-            <FinancesView
-              payments={payments}
-              transactions={transactions}
-              properties={properties}
-              tenants={tenants}
-              onUpdatePaymentStatus={handleUpdatePaymentStatus}
-              onAddTransaction={handleAddTransaction}
-              onOpenQuittanceModal={handleOpenQuittance}
-            />
-          )}
+              {activeTab === 'finances' && (
+                <FinancesView
+                  payments={payments}
+                  transactions={transactions}
+                  properties={properties}
+                  tenants={tenants}
+                  onUpdatePaymentStatus={handleUpdatePaymentStatus}
+                  onAddTransaction={handleAddTransaction}
+                  onOpenQuittanceModal={handleOpenQuittance}
+                />
+              )}
 
-          {activeTab === 'maintenance' && (
-            <MaintenanceView
-              tickets={maintenanceTickets}
-              properties={properties}
-              tenants={tenants}
-              onAddTicket={handleAddMaintenanceTicket}
-              onUpdateTicketStatus={handleUpdateTicketStatus}
-            />
-          )}
+              {activeTab === 'maintenance' && (
+                <MaintenanceView
+                  tickets={maintenanceTickets}
+                  properties={properties}
+                  tenants={tenants}
+                  onAddTicket={handleAddMaintenanceTicket}
+                  onUpdateTicketStatus={handleUpdateTicketStatus}
+                />
+              )}
 
-          {activeTab === 'ai_assistant' && (
-            <AiAssistantView
-              properties={properties}
-              tenants={tenants}
-              profile={profile}
-              selectedPropertyForAi={selectedPropertyForAi}
-              onUpdateProperty={(updatedProp) => handleSaveProperty(updatedProp)}
-            />
-          )}
+              {activeTab === 'ai_assistant' && (
+                <AiAssistantView
+                  properties={properties}
+                  tenants={tenants}
+                  profile={profile}
+                  selectedPropertyForAi={selectedPropertyForAi}
+                  onUpdateProperty={(updatedProp) => handleSaveProperty(updatedProp)}
+                />
+              )}
 
-          {activeTab === 'map' && (
-            <MapView
-              properties={properties}
-              tenants={tenants}
-              onSelectProperty={(p) => setSelectedProperty(p)}
-            />
-          )}
+              {activeTab === 'map' && (
+                <MapView
+                  properties={properties}
+                  tenants={tenants}
+                  onSelectProperty={(p) => setSelectedProperty(p)}
+                />
+              )}
 
-          {activeTab === 'taxes' && (
-            <TaxReportView
-              properties={properties}
-              transactions={transactions}
-            />
-          )}
+              {activeTab === 'taxes' && (
+                <TaxReportView
+                  properties={properties}
+                  transactions={transactions}
+                />
+              )}
 
-          {activeTab === 'settings' && (
-            <SettingsView
-              profile={profile}
-              onUpdateProfile={setProfile}
-              fullStateJson={fullStateJson}
-              onImportStateJson={handleImportFullStateJson}
-              onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
-            />
-          )}
+              {activeTab === 'settings' && (
+                <SettingsView
+                  profile={profile}
+                  onUpdateProfile={setProfile}
+                  fullStateJson={fullStateJson}
+                  onImportStateJson={handleImportFullStateJson}
+                  onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Grand Footer */}
+          <Footer
+            onNavigate={(tab) => handleNavigate(tab)}
+            onOpenAuthModal={handleOpenAuthModal}
+            onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
+          />
 
         </main>
 

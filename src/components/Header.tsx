@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import {
   Building2,
   Sparkles,
@@ -51,7 +52,9 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center space-x-3 sm:space-x-4">
           
           {/* Prominent Back Button (Bouton Retour) */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03, x: -2, opacity: 0.95 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => {
               if (onBackToLanding) {
                 onBackToLanding();
@@ -59,30 +62,37 @@ export const Header: React.FC<HeaderProps> = ({
                 setActiveTab('landing');
               }
             }}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs sm:text-sm border border-slate-700 transition-all hover:-translate-x-0.5 shadow-sm"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs sm:text-sm border border-slate-700 transition-colors shadow-sm cursor-pointer"
             title="Retourner à la page d'accueil public"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden xs:inline">Retour Site</span>
-          </button>
+          </motion.button>
 
           <div className="h-6 w-px bg-slate-800 hidden sm:block"></div>
 
           {/* Logo and Brand */}
-          <div className="flex items-center space-x-2.5 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500 flex items-center justify-center shadow-md shadow-emerald-500/20">
-              <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-slate-950 font-black" />
+          <motion.div
+            whileHover={{ scale: 1.02, opacity: 0.95 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center space-x-2.5 cursor-pointer"
+            onClick={() => setActiveTab('dashboard')}
+          >
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shadow-md shadow-emerald-500/10">
+              <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
               <div className="flex items-center space-x-1.5">
-                <span className="font-black text-lg sm:text-xl tracking-tight text-white">ImmoGestion</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30 hidden sm:inline">
+                <span className="font-bold text-lg sm:text-xl tracking-tight text-white">
+                  Immo<span className="text-emerald-400 font-extrabold">Gestion</span>
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-semibold border border-emerald-500/30 hidden sm:inline">
                   SaaS Pro
                 </span>
               </div>
-              <p className="text-[10px] sm:text-xs text-slate-400 hidden md:block">Gestion Immobilière & Rentabilité IA</p>
+              <p className="text-[10px] sm:text-xs text-slate-400 hidden md:block">by <span className="text-slate-300 font-semibold">Blink Services</span> • Gestion & IA</p>
             </div>
-          </div>
+          </motion.div>
 
         </div>
 
@@ -90,36 +100,44 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="hidden md:flex items-center space-x-2 sm:space-x-3">
           
           {/* Quick AI Assistant Trigger */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.04, opacity: 0.95 }}
+            whileTap={{ scale: 0.96 }}
             onClick={() => setActiveTab('ai_assistant')}
-            className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-purple-950/60 hover:bg-purple-900/80 text-purple-200 border border-purple-700/50 text-xs sm:text-sm font-semibold transition-all shadow-sm"
+            className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-purple-950/60 hover:bg-purple-900/80 text-purple-200 border border-purple-700/50 text-xs sm:text-sm font-semibold transition-colors shadow-sm cursor-pointer"
           >
             <Sparkles className="w-4 h-4 text-purple-400" />
             <span>Assistant IA Gemini</span>
-          </button>
+          </motion.button>
 
           {/* Quick Rent Receipt Trigger */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.04, opacity: 0.95 }}
+            whileTap={{ scale: 0.96 }}
             onClick={onOpenQuittanceModal}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-medium border border-slate-700 transition-colors"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-medium border border-slate-700 transition-colors cursor-pointer"
           >
             <Receipt className="w-4 h-4 text-emerald-400" />
             <span className="hidden lg:inline">Quittance</span>
-          </button>
+          </motion.button>
 
           {/* Add Property Button */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.04, opacity: 0.95 }}
+            whileTap={{ scale: 0.96 }}
             onClick={onOpenAddProperty}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs sm:text-sm font-bold transition-all shadow-sm"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs sm:text-sm font-bold transition-colors shadow-sm cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Nouveau Bien</span>
-          </button>
+          </motion.button>
 
           {/* Notification Alert Bell */}
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1, opacity: 0.9 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => setActiveTab('finances')}
-            className="relative p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="relative p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
             title="Alertes de loyers et maintenance"
           >
             <Bell className="w-5 h-5" />
@@ -129,14 +147,16 @@ export const Header: React.FC<HeaderProps> = ({
             {pendingAlertsCount > 0 && (
               <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-slate-900" />
             )}
-          </button>
+          </motion.button>
 
           {/* Firebase Auth Sign-in / Register / User Badge */}
           {currentUser ? (
             <div className="flex items-center space-x-2 pl-2 border-l border-slate-800">
-              <div
+              <motion.div
+                whileHover={{ scale: 1.02, opacity: 0.9 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveTab('settings')}
-                className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity"
+                className="flex items-center space-x-2 cursor-pointer transition-opacity"
               >
                 {currentUser.photoURL ? (
                   <img
@@ -155,31 +175,37 @@ export const Header: React.FC<HeaderProps> = ({
                   </p>
                   <p className="text-emerald-400 text-[10px]">Connecté</p>
                 </div>
-              </div>
+              </motion.div>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.08, opacity: 0.9 }}
+                whileTap={{ scale: 0.92 }}
                 onClick={onLogout}
-                className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 border border-slate-700 transition-colors"
+                className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 border border-slate-700 transition-colors cursor-pointer"
                 title="Se déconnecter"
               >
                 <LogOut className="w-4 h-4" />
-              </button>
+              </motion.button>
             </div>
           ) : (
             <div className="flex items-center space-x-2 pl-2 border-l border-slate-800">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.04, opacity: 0.95 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => onOpenAuthModal('login')}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all"
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-colors cursor-pointer"
               >
                 <LogIn className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Connexion</span>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.04, opacity: 0.95 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={() => onOpenAuthModal('register')}
-                className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition-all shadow-sm"
+                className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition-colors shadow-sm cursor-pointer"
               >
                 Inscription
-              </button>
+              </motion.button>
             </div>
           )}
 
