@@ -111,30 +111,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     <div className="space-[#1e293b] space-y-6">
       
       {/* Top Banner / Welcome & Quick Actions */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-slate-900/90 p-6 rounded-2xl border border-slate-800 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span>Aperçu de la SCI & Portefeuille</span>
+          <div className="flex items-center space-x-2 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Gestion de Portefeuille SCI</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Tableau de Bord Immobilier</h1>
-          <p className="text-slate-400 text-sm mt-1">
-            {properties.length} biens sous gestion • {occupiedProperties.length} locataires actifs • {totalMonthlyIncome.toLocaleString('fr-FR')} € / mois
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Tableau de Bord Immobilier</h1>
+          <p className="text-slate-400 text-xs sm:text-sm mt-1">
+            {properties.length} biens sous gestion • {occupiedProperties.length} locataires sous bail • {totalMonthlyIncome.toLocaleString('fr-FR')} € / mois encaissés
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={() => setActiveTab('ai_assistant')}
-            className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-500/40 text-xs sm:text-sm font-semibold transition-all"
+            className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-purple-950/50 hover:bg-purple-900/70 text-purple-300 border border-purple-700/50 text-xs sm:text-sm font-semibold transition-all"
           >
-            <Sparkles className="w-4 h-4 text-purple-300" />
-            <span>Générer Annonce / Analyse IA</span>
+            <Sparkles className="w-4 h-4 text-purple-400" />
+            <span>Analyse & Annonces IA</span>
           </button>
           
           <button
             onClick={onOpenQuittanceModal}
-            className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs sm:text-sm font-bold transition-all shadow-md"
+            className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs sm:text-sm font-bold transition-all shadow-sm"
           >
             <Receipt className="w-4 h-4" />
             <span>Émettre Quittance</span>

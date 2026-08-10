@@ -8,7 +8,38 @@ export const initialProfile: LandlordProfile = {
   siret: "892 145 901 00012",
   address: "15 Boulevard Haussmann, 75009 Paris",
   bankIban: "FR76 3000 4018 2000 0123 4567 890",
-  bankBic: "BNPAFRPPXXX"
+  bankBic: "BNPAFRPPXXX",
+  subscriptionPlan: "pro",
+  billingCycle: "monthly",
+  subscriptionStatus: "active",
+  subscriptionRenewalDate: "2026-09-01",
+  paymentMethod: {
+    cardLast4: "4242",
+    brand: "visa",
+    expiryMonth: "12",
+    expiryYear: "2028",
+    cardholderName: "Alexandre De Saint-Germain"
+  },
+  subscriptionInvoices: [
+    {
+      id: "inv-2026-08",
+      date: "2026-08-01",
+      amount: 19,
+      planName: "Pro SCI & Multi-Biens",
+      billingCycle: "monthly",
+      status: "Paid",
+      pdfNumber: "INV-2026-0801-042"
+    },
+    {
+      id: "inv-2026-07",
+      date: "2026-07-01",
+      amount: 19,
+      planName: "Pro SCI & Multi-Biens",
+      billingCycle: "monthly",
+      status: "Paid",
+      pdfNumber: "INV-2026-0701-019"
+    }
+  ]
 };
 
 export const initialProperties: Property[] = [

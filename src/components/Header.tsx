@@ -70,14 +70,14 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Logo and Brand */}
           <div className="flex items-center space-x-2.5 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-slate-950 font-bold" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500 flex items-center justify-center shadow-md shadow-emerald-500/20">
+              <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-slate-950 font-black" />
             </div>
             <div>
               <div className="flex items-center space-x-1.5">
-                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white">ImmoGestion</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30 hidden sm:inline">
-                  SaaS
+                <span className="font-black text-lg sm:text-xl tracking-tight text-white">ImmoGestion</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30 hidden sm:inline">
+                  SaaS Pro
                 </span>
               </div>
               <p className="text-[10px] sm:text-xs text-slate-400 hidden md:block">Gestion Immobilière & Rentabilité IA</p>
@@ -92,9 +92,9 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Quick AI Assistant Trigger */}
           <button
             onClick={() => setActiveTab('ai_assistant')}
-            className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-medium transition-all shadow-sm hover:shadow-purple-500/25"
+            className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-purple-950/60 hover:bg-purple-900/80 text-purple-200 border border-purple-700/50 text-xs sm:text-sm font-semibold transition-all shadow-sm"
           >
-            <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+            <Sparkles className="w-4 h-4 text-purple-400" />
             <span>Assistant IA Gemini</span>
           </button>
 

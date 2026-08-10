@@ -181,7 +181,7 @@ export const FinancesView: React.FC<FinancesViewProps> = ({
           </div>
 
           <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto no-scrollbar max-w-full">
               <table className="w-full text-left text-xs text-slate-300">
                 <thead className="bg-slate-800/80 text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-800">
                   <tr>
@@ -257,7 +257,7 @@ export const FinancesView: React.FC<FinancesViewProps> = ({
       {/* Sub Tab 2: Cashflow Transactions */}
       {activeSubTab === 'transactions' && (
         <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar max-w-full">
             <table className="w-full text-left text-xs text-slate-300">
               <thead className="bg-slate-800/80 text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-800">
                 <tr>

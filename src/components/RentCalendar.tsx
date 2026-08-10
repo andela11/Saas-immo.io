@@ -322,13 +322,14 @@ export const RentCalendar: React.FC<RentCalendarProps> = ({
 
       {/* Calendar Grid Container */}
       <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/40">
-        
-        {/* Days of week header */}
-        <div className="grid grid-cols-7 bg-slate-800/80 border-b border-slate-800 text-center py-2.5 font-bold text-xs text-slate-300">
-          {DAYS_OF_WEEK.map((day) => (
-            <div key={day}>{day}</div>
-          ))}
-        </div>
+        <div className="overflow-x-auto no-scrollbar max-w-full">
+          <div className="min-w-[550px]">
+            {/* Days of week header */}
+            <div className="grid grid-cols-7 bg-slate-800/80 border-b border-slate-800 text-center py-2.5 font-bold text-xs text-slate-300">
+              {DAYS_OF_WEEK.map((day) => (
+                <div key={day}>{day}</div>
+              ))}
+            </div>
 
         {/* Days Grid */}
         <div className="grid grid-cols-7 gap-px bg-slate-800/50">
@@ -420,6 +421,8 @@ export const RentCalendar: React.FC<RentCalendarProps> = ({
               </div>
             );
           })}
+        </div>
+          </div>
         </div>
 
       </div>

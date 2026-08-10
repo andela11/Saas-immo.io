@@ -15,6 +15,7 @@ import { MapView } from './components/MapView';
 import { TaxReportView } from './components/TaxReportView';
 import { SettingsView } from './components/SettingsView';
 import { AuthModal } from './components/AuthModal';
+import { PaymentModal } from './components/PaymentModal';
 
 import {
   Property,
@@ -176,6 +177,9 @@ export default function App() {
   // Auth modal state
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
+
+  // Payment modal state
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   const handleNavigate = (newTab: ActiveTab) => {
     setTabHistory((prev) => [...prev, newTab]);
@@ -409,6 +413,7 @@ export default function App() {
         <LandingPageView
           onEnterApp={(targetTab) => handleNavigate(targetTab || 'dashboard')}
           onOpenAuthModal={handleOpenAuthModal}
+          onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
           properties={properties}
           onAddCandidateApplication={(candidate) => {
             alert(`✓ Candidature reçue pour ${candidate.propertyTitle} !\nNom : ${candidate.name}\nEmail : ${candidate.email}\nRevenus : ${candidate.incomeMonthly} €/mois`);
@@ -428,12 +433,25 @@ export default function App() {
             }
           }}
         />
+
+        {/* Global Payment Modal */}
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          profile={profile}
+          onUpdateProfile={(updated) => {
+            setProfile(updated);
+            if (currentUser) {
+              saveUserDoc('users', currentUser.uid, updated, currentUser.uid);
+            }
+          }}
+        />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950 overflow-x-hidden w-full max-w-full">
       
       {/* Top Header */}
       <Header
@@ -453,7 +471,7 @@ export default function App() {
       />
 
       {/* Main Body Layout */}
-      <div className="flex-1 flex flex-col lg:flex-row max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 gap-6">
+      <div className="flex-1 flex flex-col lg:flex-row max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 gap-4 sm:gap-6 min-w-0">
         
         {/* Navigation Sidebar */}
         <Sidebar
@@ -562,6 +580,7 @@ export default function App() {
               onUpdateProfile={setProfile}
               fullStateJson={fullStateJson}
               onImportStateJson={handleImportFullStateJson}
+              onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
             />
           )}
 
@@ -624,6 +643,19 @@ export default function App() {
             handleNavigate('dashboard');
           } else {
             handleNavigate('dashboard');
+          }
+        }}
+      />
+
+      {/* 5. Global Payment & Subscription Modal */}
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        profile={profile}
+        onUpdateProfile={(updated) => {
+          setProfile(updated);
+          if (currentUser) {
+            saveUserDoc('users', currentUser.uid, updated, currentUser.uid);
           }
         }}
       />

@@ -184,7 +184,7 @@ Signature du Bailleur`;
           </div>
 
           {/* Table Breakdown */}
-          <div className="mb-6 overflow-x-auto">
+          <div className="mb-6 overflow-x-auto no-scrollbar max-w-full">
             <table className="w-full text-xs text-left border-collapse min-w-[280px]">
               <thead>
                 <tr className="bg-slate-100 text-slate-700 uppercase font-bold text-[9px] sm:text-[10px] border-y border-slate-300">

@@ -94,6 +94,27 @@ export interface FinancialTransaction {
   description: string;
 }
 
+export type SubscriptionPlanId = 'free' | 'pro' | 'patrimoine';
+export type SubscriptionBillingCycle = 'monthly' | 'yearly';
+
+export interface SubscriptionInvoice {
+  id: string;
+  date: string;
+  amount: number;
+  planName: string;
+  billingCycle: SubscriptionBillingCycle;
+  status: 'Paid' | 'Pending';
+  pdfNumber: string;
+}
+
+export interface SavedPaymentMethod {
+  cardLast4: string;
+  brand: 'visa' | 'mastercard' | 'amex';
+  expiryMonth: string;
+  expiryYear: string;
+  cardholderName: string;
+}
+
 export interface LandlordProfile {
   name: string;
   companyName: string;
@@ -103,6 +124,12 @@ export interface LandlordProfile {
   address: string;
   bankIban?: string;
   bankBic?: string;
+  subscriptionPlan?: SubscriptionPlanId;
+  billingCycle?: SubscriptionBillingCycle;
+  subscriptionStatus?: 'active' | 'canceled' | 'trial';
+  subscriptionRenewalDate?: string;
+  paymentMethod?: SavedPaymentMethod;
+  subscriptionInvoices?: SubscriptionInvoice[];
 }
 
 export type ActiveTab = 'landing' | 'dashboard' | 'properties' | 'tenants' | 'finances' | 'maintenance' | 'ai_assistant' | 'map' | 'taxes' | 'settings';

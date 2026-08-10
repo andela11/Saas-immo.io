@@ -189,15 +189,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         {/* Footer Portfolio Mini Summary */}
-        <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 text-xs space-y-1">
+        <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs space-y-2">
           <div className="flex items-center justify-between text-slate-400">
-            <span>Statut du Serveur</span>
-            <span className="flex items-center space-x-1 text-emerald-400 font-bold">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>En Ligne</span>
+            <span>Abonnement SaaS</span>
+            <span className="flex items-center space-x-1 text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30 text-[10px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Pro SCI</span>
             </span>
           </div>
-          <p className="text-[11px] text-slate-500">ImmoGestion v2.4 SaaS</p>
+          <button
+            onClick={() => setActiveTab('settings')}
+            className="w-full text-left text-[11px] text-slate-400 hover:text-emerald-400 transition-colors flex items-center justify-between group"
+          >
+            <span>Gérer mon paiement</span>
+            <span className="group-hover:translate-x-0.5 transition-transform">&rarr;</span>
+          </button>
         </div>
 
       </div>

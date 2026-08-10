@@ -32,6 +32,7 @@ import { ActiveTab, Property } from '../types';
 interface LandingPageViewProps {
   onEnterApp: (targetTab?: ActiveTab) => void;
   onOpenAuthModal?: (mode?: 'login' | 'register') => void;
+  onOpenPaymentModal?: () => void;
   properties?: Property[];
   onAddCandidateApplication?: (candidate: {
     propertyTitle: string;
@@ -47,6 +48,7 @@ interface LandingPageViewProps {
 export const LandingPageView: React.FC<LandingPageViewProps> = ({
   onEnterApp,
   onOpenAuthModal,
+  onOpenPaymentModal,
   properties = [],
   onAddCandidateApplication
 }) => {
@@ -164,20 +166,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950 overflow-x-hidden w-full max-w-full">
       
-      {/* Top Announcement Bar */}
-      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 text-slate-950 font-bold text-xs py-2 px-4 text-center flex items-center justify-center space-x-2">
-        <span className="bg-slate-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider">Mise à jour</span>
-        <span>Version 2.4 : Intégration de l'IA Gemini 3.6 Flash pour la rédaction de courriers & la révision IRL !</span>
-        <button
-          onClick={() => onEnterApp('ai_assistant')}
-          className="underline hover:text-white ml-2 transition-colors"
-        >
-          Tester l'IA &rarr;
-        </button>
-      </div>
-
       {/* Navigation Bar */}
       <nav className="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -239,7 +229,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-28 overflow-hidden">
+      <section className="relative pt-12 sm:pt-20 pb-20 sm:pb-28 overflow-hidden">
         {/* Sleek Dark Background Ambient Video Loop */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <video
@@ -267,8 +257,10 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
         </div>
 
         {/* Glowing Ambient Background Orbs */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-emerald-500/15 blur-[140px] rounded-full pointer-events-none z-0"></div>
-        <div className="absolute top-1/3 right-10 w-[450px] h-[350px] bg-indigo-500/15 blur-[120px] rounded-full pointer-events-none z-0"></div>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[700px] h-[300px] sm:h-[400px] bg-emerald-500/15 blur-[100px] sm:blur-[140px] rounded-full pointer-events-none"></div>
+          <div className="absolute top-1/3 right-2 sm:right-10 w-[250px] sm:w-[450px] h-[250px] sm:h-[350px] bg-indigo-500/15 blur-[90px] sm:blur-[120px] rounded-full pointer-events-none"></div>
+        </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-8">
           
@@ -368,7 +360,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
           </div>
 
           {/* City Filter buttons */}
-          <div className="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0">
+          <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar pb-2 md:pb-0 max-w-full">
             {cities.map((city) => (
               <button
                 key={city}
@@ -884,8 +876,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             </div>
 
             <button
-              onClick={() => onEnterApp('dashboard')}
-              className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all"
+              onClick={() => (onOpenPaymentModal ? onOpenPaymentModal() : onEnterApp('settings'))}
+              className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 transition-all cursor-pointer"
             >
               Essayer le Mode Pro
             </button>
@@ -920,10 +912,10 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             </div>
 
             <button
-              onClick={() => onEnterApp('dashboard')}
-              className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all"
+              onClick={() => (onOpenPaymentModal ? onOpenPaymentModal() : onEnterApp('settings'))}
+              className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all cursor-pointer"
             >
-              Contacter le Support
+              Passer au Plan Patrimoine
             </button>
           </div>
 
