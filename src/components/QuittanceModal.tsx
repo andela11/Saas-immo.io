@@ -75,35 +75,35 @@ Signature du Bailleur`;
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-slate-900 border border-slate-800 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden my-6">
+    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+      <div className="bg-slate-900 border border-slate-800 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden my-4 sm:my-6 max-h-[92vh] flex flex-col">
         
         {/* Controls Header */}
-        <div className="p-4 border-b border-slate-800 bg-slate-900 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center space-x-3">
+        <div className="p-3 sm:p-4 border-b border-slate-800 bg-slate-900 flex flex-wrap items-center justify-between gap-2.5 flex-shrink-0">
+          <div className="flex items-center space-x-2.5">
             <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
-              <Receipt className="w-5 h-5" />
+              <Receipt className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Quittance de Loyer Officielle</h2>
-              <p className="text-xs text-slate-400">Document conforme à la Loi n° 89-462 du 6 juillet 1989</p>
+              <h2 className="text-xs sm:text-base font-bold text-white">Quittance de Loyer Officielle</h2>
+              <p className="text-[10px] sm:text-xs text-slate-400">Document conforme à la Loi n° 89-462 du 6 juillet 1989</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 ml-auto">
             <button
               onClick={handleCopyText}
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors"
+              className="flex items-center space-x-1 px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] sm:text-xs font-semibold border border-slate-700 transition-colors"
             >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? 'Copié !' : 'Copier'}</span>
             </button>
 
             <button
               onClick={handlePrint}
-              className="flex items-center space-x-1 px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all shadow-md"
+              className="flex items-center space-x-1 px-2.5 sm:px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-[11px] sm:text-xs font-bold transition-all shadow-md"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-3.5 h-3.5" />
               <span>Imprimer / PDF</span>
             </button>
 
@@ -111,19 +111,19 @@ Signature du Bailleur`;
               onClick={onClose}
               className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
 
         {/* Selection Bar */}
-        <div className="bg-slate-800/60 p-4 border-b border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div className="bg-slate-800/60 p-3 sm:p-4 border-b border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs flex-shrink-0">
           <div>
-            <label className="block text-slate-400 mb-1 font-semibold">Locataire Destinataire</label>
+            <label className="block text-slate-400 mb-1 font-semibold text-[11px] sm:text-xs">Locataire Destinataire</label>
             <select
               value={selectedTenantId}
               onChange={(e) => setSelectedTenantId(e.target.value)}
-              className="w-full bg-slate-900 text-white font-bold p-2 rounded-lg border border-slate-700"
+              className="w-full bg-slate-900 text-white font-bold p-2 rounded-lg border border-slate-700 text-xs"
             >
               {tenants.map((t) => (
                 <option key={t.id} value={t.id}>
@@ -134,60 +134,60 @@ Signature du Bailleur`;
           </div>
 
           <div>
-            <label className="block text-slate-400 mb-1 font-semibold">Mois de la Quittance</label>
+            <label className="block text-slate-400 mb-1 font-semibold text-[11px] sm:text-xs">Mois de la Quittance</label>
             <input
               type="text"
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
               placeholder="ex: Août 2026"
-              className="w-full bg-slate-900 text-white font-bold p-2 rounded-lg border border-slate-700"
+              className="w-full bg-slate-900 text-white font-bold p-2 rounded-lg border border-slate-700 text-xs"
             />
           </div>
         </div>
 
         {/* Official Printable Receipt Document */}
-        <div className="p-8 bg-white text-slate-900 font-sans print:p-0 print:m-0" id="printable-quittance">
+        <div className="p-4 sm:p-8 bg-white text-slate-900 font-sans print:p-0 print:m-0 overflow-y-auto flex-1" id="printable-quittance">
           
           {/* Official Document Header */}
-          <div className="border-b-2 border-slate-900 pb-4 mb-6 flex justify-between items-start">
+          <div className="border-b-2 border-slate-900 pb-3 sm:pb-4 mb-4 sm:mb-6 flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-4">
             <div>
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">QUITTANCE DE LOYER</h1>
-              <p className="text-xs text-slate-600 font-bold uppercase tracking-wider mt-1">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight uppercase">QUITTANCE DE LOYER</h1>
+              <p className="text-[10px] sm:text-xs text-slate-600 font-bold uppercase tracking-wider mt-0.5 sm:mt-1">
                 Période : {period}
               </p>
             </div>
 
-            <div className="text-right text-xs">
+            <div className="text-left sm:text-right text-xs">
               <span className="font-bold text-slate-900 block">{profile.companyName}</span>
-              <span className="text-slate-600 block">SIRET : {profile.siret || 'N/A'}</span>
+              <span className="text-slate-600 block text-[11px]">SIRET : {profile.siret || 'N/A'}</span>
             </div>
           </div>
 
           {/* Landlord vs Tenant Box */}
-          <div className="grid grid-cols-2 gap-6 mb-8 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-6 sm:mb-8 text-xs">
             {/* Bailleur */}
-            <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-              <h3 className="font-extrabold uppercase text-slate-500 text-[10px] tracking-wider mb-2">Bailleur / Mandataire</h3>
-              <p className="font-bold text-slate-900 text-sm">{profile.name}</p>
-              <p className="font-semibold text-slate-700">{profile.companyName}</p>
-              <p className="text-slate-600 mt-1">{profile.address}</p>
-              <p className="text-slate-600">{profile.email} • {profile.phone}</p>
+            <div className="bg-slate-50 p-3 sm:p-4 rounded-lg border border-slate-200">
+              <h3 className="font-extrabold uppercase text-slate-500 text-[9px] sm:text-[10px] tracking-wider mb-1.5">Bailleur / Mandataire</h3>
+              <p className="font-bold text-slate-900 text-xs sm:text-sm">{profile.name}</p>
+              <p className="font-semibold text-slate-700 text-[11px] sm:text-xs">{profile.companyName}</p>
+              <p className="text-slate-600 mt-1 text-[11px] sm:text-xs">{profile.address}</p>
+              <p className="text-slate-600 text-[11px] sm:text-xs">{profile.email} • {profile.phone}</p>
             </div>
 
             {/* Locataire */}
-            <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-              <h3 className="font-extrabold uppercase text-slate-500 text-[10px] tracking-wider mb-2">Locataire</h3>
-              <p className="font-bold text-slate-900 text-sm">{currentTenant?.firstName} {currentTenant?.lastName}</p>
-              <p className="text-slate-700 mt-1">{currentProperty?.address}</p>
-              <p className="text-slate-700">{currentProperty?.postalCode} {currentProperty?.city}</p>
+            <div className="bg-slate-50 p-3 sm:p-4 rounded-lg border border-slate-200">
+              <h3 className="font-extrabold uppercase text-slate-500 text-[9px] sm:text-[10px] tracking-wider mb-1.5">Locataire</h3>
+              <p className="font-bold text-slate-900 text-xs sm:text-sm">{currentTenant?.firstName} {currentTenant?.lastName}</p>
+              <p className="text-slate-700 mt-1 text-[11px] sm:text-xs">{currentProperty?.address}</p>
+              <p className="text-slate-700 text-[11px] sm:text-xs">{currentProperty?.postalCode} {currentProperty?.city}</p>
             </div>
           </div>
 
           {/* Table Breakdown */}
-          <div className="mb-6">
-            <table className="w-full text-xs text-left border-collapse">
+          <div className="mb-6 overflow-x-auto">
+            <table className="w-full text-xs text-left border-collapse min-w-[280px]">
               <thead>
-                <tr className="bg-slate-100 text-slate-700 uppercase font-bold text-[10px] border-y border-slate-300">
+                <tr className="bg-slate-100 text-slate-700 uppercase font-bold text-[9px] sm:text-[10px] border-y border-slate-300">
                   <th className="py-2.5 px-3">Désignation</th>
                   <th className="py-2.5 px-3 text-right">Montant</th>
                 </tr>
@@ -202,33 +202,33 @@ Signature du Bailleur`;
                   <td className="py-2.5 px-3 text-right font-bold text-slate-900">{chargesAmount.toFixed(2)} €</td>
                 </tr>
                 <tr className="bg-emerald-50 font-black">
-                  <td className="py-3 px-3 text-emerald-900 text-sm">TOTAL ACQUITTÉ</td>
-                  <td className="py-3 px-3 text-right text-emerald-900 text-base">{totalAmount.toFixed(2)} €</td>
+                  <td className="py-3 px-3 text-emerald-900 text-xs sm:text-sm">TOTAL ACQUITTÉ</td>
+                  <td className="py-3 px-3 text-right text-emerald-900 text-sm sm:text-base">{totalAmount.toFixed(2)} €</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           {/* Declaration Statement */}
-          <div className="text-xs leading-relaxed text-slate-700 mb-8 p-4 bg-slate-50 rounded-lg border border-slate-200">
+          <div className="text-[11px] sm:text-xs leading-relaxed text-slate-700 mb-6 sm:mb-8 p-3 sm:p-4 bg-slate-50 rounded-lg border border-slate-200">
             <p>
               Je soussigné(e), <strong className="text-slate-900">{profile.name}</strong>, représentant du bailleur <strong className="text-slate-900">{profile.companyName}</strong>, reconnais avoir reçu de M./Mme <strong className="text-slate-900">{currentTenant?.firstName} {currentTenant?.lastName}</strong> la somme de <strong className="text-slate-900">{totalAmount.toFixed(2)} €</strong> au titre du paiement du loyer et des charges pour la période du mois de <strong>{period}</strong>.
             </p>
-            <p className="mt-2 text-[11px] text-slate-500 italic">
+            <p className="mt-2 text-[10px] sm:text-[11px] text-slate-500 italic">
               Cette quittance annule tous les reçus qui auraient pu être donnés pour acompte versé à ce jour. À conserver pendant une durée minimale de 3 ans.
             </p>
           </div>
 
           {/* Signature Footer */}
-          <div className="flex justify-between items-end pt-4 border-t border-slate-300 text-xs">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 pt-4 border-t border-slate-300 text-xs">
             <div>
-              <p className="text-slate-500 text-[11px]">Fait à Paris, le {currentDateStr}</p>
-              <p className="text-slate-500 text-[11px] font-mono mt-1">Réf Document : QUIT-{Date.now().toString().slice(-6)}</p>
+              <p className="text-slate-500 text-[10px] sm:text-[11px]">Fait à Paris, le {currentDateStr}</p>
+              <p className="text-slate-500 text-[10px] sm:text-[11px] font-mono mt-0.5">Réf Document : QUIT-{Date.now().toString().slice(-6)}</p>
             </div>
 
-            <div className="text-right">
-              <p className="font-bold text-slate-900 mb-8">Signature du Bailleur</p>
-              <div className="inline-block border-b-2 border-slate-400 w-36 pb-1 text-[10px] text-slate-400 font-serif italic">
+            <div className="text-left sm:text-right w-full sm:w-auto">
+              <p className="font-bold text-slate-900 mb-4 sm:mb-8 text-xs">Signature du Bailleur</p>
+              <div className="inline-block border-b-2 border-slate-400 w-32 sm:w-36 pb-1 text-[10px] text-slate-400 font-serif italic">
                 {profile.companyName}
               </div>
             </div>

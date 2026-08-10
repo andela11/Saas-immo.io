@@ -31,6 +31,7 @@ import { ActiveTab, Property } from '../types';
 
 interface LandingPageViewProps {
   onEnterApp: (targetTab?: ActiveTab) => void;
+  onOpenAuthModal?: (mode?: 'login' | 'register') => void;
   properties?: Property[];
   onAddCandidateApplication?: (candidate: {
     propertyTitle: string;
@@ -45,6 +46,7 @@ interface LandingPageViewProps {
 
 export const LandingPageView: React.FC<LandingPageViewProps> = ({
   onEnterApp,
+  onOpenAuthModal,
   properties = [],
   onAddCandidateApplication
 }) => {
@@ -207,13 +209,29 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
             <a href="#faq" className="hover:text-emerald-400 transition-colors">FAQ</a>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            {onOpenAuthModal && (
+              <>
+                <button
+                  onClick={() => onOpenAuthModal('login')}
+                  className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold text-xs border border-slate-800 transition-all"
+                >
+                  Se Connecter
+                </button>
+                <button
+                  onClick={() => onOpenAuthModal('register')}
+                  className="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-md transition-all hidden sm:block"
+                >
+                  S'Inscrire
+                </button>
+              </>
+            )}
             <button
               onClick={() => onEnterApp('dashboard')}
-              className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all flex items-center space-x-1.5"
+              className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs border border-slate-700 transition-all flex items-center space-x-1.5"
             >
-              <span>Accéder à l'Application</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Espace Démo</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
@@ -272,20 +290,20 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <button
-              onClick={() => onEnterApp('dashboard')}
+              onClick={() => onOpenAuthModal ? onOpenAuthModal('register') : onEnterApp('dashboard')}
               className="w-full sm:w-auto px-8 py-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm shadow-xl shadow-emerald-500/25 transition-all flex items-center justify-center space-x-2"
             >
-              <Play className="w-4 h-4 fill-slate-950" />
-              <span>Ouvrir la Démo Interactive Live</span>
+              <span>Créer mon Compte Gratuit</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
 
-            <a
-              href="#simulator"
+            <button
+              onClick={() => onEnterApp('dashboard')}
               className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold text-sm border border-slate-800 transition-all flex items-center justify-center space-x-2"
             >
-              <Calculator className="w-4 h-4 text-emerald-400" />
-              <span>Calculer la Rentabilité de mon Bien</span>
-            </a>
+              <Play className="w-4 h-4 text-emerald-400 fill-emerald-400" />
+              <span>Tester la Démo Immédiate</span>
+            </button>
           </div>
 
           {/* Feature Badges under Hero */}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   X,
   Building2,
@@ -11,7 +11,8 @@ import {
   FileText,
   DollarSign,
   ShieldCheck,
-  Calendar
+  Calendar,
+  Upload
 } from 'lucide-react';
 import { Property, Tenant, MaintenanceTicket } from '../types';
 
@@ -22,6 +23,7 @@ interface PropertyDetailModalProps {
   onClose: () => void;
   onOpenAiAssistant: (property: Property) => void;
   onOpenQuittanceModal: () => void;
+  onUpdateProperty?: (updatedProperty: Property) => void;
 }
 
 export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
@@ -31,8 +33,31 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
   onClose,
   onOpenAiAssistant,
   onOpenQuittanceModal,
+  onUpdateProperty,
 }) => {
   if (!property) return null;
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Veuillez sélectionner un fichier image valide (JPG, PNG, WEBP, etc.)');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result && onUpdateProperty) {
+        onUpdateProperty({
+          ...property,
+          imageUrl: event.target.result as string,
+        });
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const annualRent = property.monthlyRent * 12;
   const grossYield = (annualRent / property.purchasePrice) * 100;
@@ -58,12 +83,35 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
           
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-950/80 hover:bg-slate-950 text-white flex items-center justify-center border border-slate-700 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          {/* Hidden file input for photo upload */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
+          <div className="absolute top-4 right-4 flex items-center space-x-2">
+            {onUpdateProperty && (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="px-3 py-1.5 rounded-xl bg-slate-950/80 hover:bg-emerald-500 hover:text-slate-950 text-white text-xs font-bold flex items-center space-x-1.5 border border-slate-700 transition-all shadow-md backdrop-blur-sm"
+                title="Changer la photo depuis votre ordinateur ou smartphone"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Changer la photo</span>
+              </button>
+            )}
+
+            <button
+              onClick={onClose}
+              className="w-9 h-9 rounded-full bg-slate-950/80 hover:bg-slate-950 text-white flex items-center justify-center border border-slate-700 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
           <div className="absolute bottom-4 left-6 right-6">
             <div className="flex items-center space-x-2 mb-1">

@@ -18,6 +18,7 @@ export interface Property {
   status: PropertyStatus;
   dpe: DPEGrade;
   imageUrl: string;
+  images?: string[];
   lat: number;
   lng: number;
   tenantId?: string;
@@ -76,6 +77,7 @@ export interface MaintenanceTicket {
   priority: MaintenancePriority;
   status: MaintenanceStatus;
   createdAt: string;
+  imageUrl?: string;
   estimatedCost?: number;
   actualCost?: number;
   contractorName?: string;

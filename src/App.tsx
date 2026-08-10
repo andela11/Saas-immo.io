@@ -14,6 +14,7 @@ import { AiAssistantView } from './components/AiAssistantView';
 import { MapView } from './components/MapView';
 import { TaxReportView } from './components/TaxReportView';
 import { SettingsView } from './components/SettingsView';
+import { AuthModal } from './components/AuthModal';
 
 import {
   Property,
@@ -43,6 +44,7 @@ import {
   syncUserProfile,
   fetchUserData,
   saveUserDoc,
+  saveAllUserDocs,
   deleteUserDoc,
   User,
 } from './lib/firebase';
@@ -50,6 +52,7 @@ import {
 export default function App() {
   // Firebase Auth State
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isCloudSyncReady, setIsCloudSyncReady] = useState(false);
 
   // LocalStorage State Initialization with Fallbacks
   const [profile, setProfile] = useState<LandlordProfile>(() => {
@@ -82,35 +85,68 @@ export default function App() {
     return saved ? JSON.parse(saved) : initialTransactions;
   });
 
-  // Listen to Firebase Auth state
+  // Listen to Firebase Auth state & sync initial data
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
-        // Sync & Fetch User Firestore Data
+        setIsCloudSyncReady(false);
+        // Sync & Fetch User Firestore Profile
         const dbProfile = await syncUserProfile(user);
         if (dbProfile) {
           setProfile((prev) => ({
             ...prev,
+            ...dbProfile,
             name: dbProfile.name || user.displayName || prev.name,
             email: dbProfile.email || user.email || prev.email,
           }));
+        } else {
+          saveUserDoc('users', user.uid, profile, user.uid);
         }
 
+        // Fetch properties
         const cloudProps = await fetchUserData<Property>('properties', user.uid);
-        if (cloudProps.length > 0) setProperties(cloudProps);
+        if (cloudProps.length > 0) {
+          setProperties(cloudProps);
+        } else if (properties.length > 0) {
+          saveAllUserDocs('properties', properties, user.uid);
+        }
 
+        // Fetch tenants
         const cloudTenants = await fetchUserData<Tenant>('tenants', user.uid);
-        if (cloudTenants.length > 0) setTenants(cloudTenants);
+        if (cloudTenants.length > 0) {
+          setTenants(cloudTenants);
+        } else if (tenants.length > 0) {
+          saveAllUserDocs('tenants', tenants, user.uid);
+        }
 
+        // Fetch payments
         const cloudPayments = await fetchUserData<PaymentRecord>('payments', user.uid);
-        if (cloudPayments.length > 0) setPayments(cloudPayments);
+        if (cloudPayments.length > 0) {
+          setPayments(cloudPayments);
+        } else if (payments.length > 0) {
+          saveAllUserDocs('payments', payments, user.uid);
+        }
 
+        // Fetch maintenance tickets
         const cloudTickets = await fetchUserData<MaintenanceTicket>('maintenanceTickets', user.uid);
-        if (cloudTickets.length > 0) setMaintenanceTickets(cloudTickets);
+        if (cloudTickets.length > 0) {
+          setMaintenanceTickets(cloudTickets);
+        } else if (maintenanceTickets.length > 0) {
+          saveAllUserDocs('maintenanceTickets', maintenanceTickets, user.uid);
+        }
 
+        // Fetch transactions
         const cloudTxs = await fetchUserData<FinancialTransaction>('transactions', user.uid);
-        if (cloudTxs.length > 0) setTransactions(cloudTxs);
+        if (cloudTxs.length > 0) {
+          setTransactions(cloudTxs);
+        } else if (transactions.length > 0) {
+          saveAllUserDocs('transactions', transactions, user.uid);
+        }
+
+        setIsCloudSyncReady(true);
+      } else {
+        setIsCloudSyncReady(false);
       }
     });
     return () => unsubscribe();
@@ -128,12 +164,43 @@ export default function App() {
     try {
       await logoutUser();
       setCurrentUser(null);
+      setActiveTabState('landing');
     } catch (err) {
       console.error('Logout failed:', err);
     }
   };
 
-  const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
+  const [activeTab, setActiveTabState] = useState<ActiveTab>('landing');
+  const [tabHistory, setTabHistory] = useState<ActiveTab[]>(['landing']);
+
+  // Auth modal state
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
+
+  const handleNavigate = (newTab: ActiveTab) => {
+    setTabHistory((prev) => [...prev, newTab]);
+    setActiveTabState(newTab);
+  };
+
+  const handleBack = () => {
+    if (tabHistory.length > 1) {
+      const newHistory = [...tabHistory];
+      newHistory.pop();
+      setTabHistory(newHistory);
+      setActiveTabState(newHistory[newHistory.length - 1]);
+    } else {
+      setActiveTabState('landing');
+    }
+  };
+
+  const handleOpenAuthModal = (mode: 'login' | 'register' = 'login') => {
+    setAuthModalMode(mode);
+    setIsAuthModalOpen(true);
+  };
+
+  const setActiveTab = (tab: ActiveTab) => {
+    handleNavigate(tab);
+  };
 
   // Modals state
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
@@ -148,27 +215,45 @@ export default function App() {
   // Sync state to LocalStorage
   useEffect(() => {
     localStorage.setItem('immogestion_profile', JSON.stringify(profile));
-  }, [profile]);
+    if (currentUser && isCloudSyncReady) {
+      saveUserDoc('users', currentUser.uid, profile, currentUser.uid);
+    }
+  }, [profile, currentUser, isCloudSyncReady]);
 
   useEffect(() => {
     localStorage.setItem('immogestion_properties', JSON.stringify(properties));
-  }, [properties]);
+    if (currentUser && isCloudSyncReady) {
+      saveAllUserDocs('properties', properties, currentUser.uid);
+    }
+  }, [properties, currentUser, isCloudSyncReady]);
 
   useEffect(() => {
     localStorage.setItem('immogestion_tenants', JSON.stringify(tenants));
-  }, [tenants]);
+    if (currentUser && isCloudSyncReady) {
+      saveAllUserDocs('tenants', tenants, currentUser.uid);
+    }
+  }, [tenants, currentUser, isCloudSyncReady]);
 
   useEffect(() => {
     localStorage.setItem('immogestion_payments', JSON.stringify(payments));
-  }, [payments]);
+    if (currentUser && isCloudSyncReady) {
+      saveAllUserDocs('payments', payments, currentUser.uid);
+    }
+  }, [payments, currentUser, isCloudSyncReady]);
 
   useEffect(() => {
     localStorage.setItem('immogestion_maintenance', JSON.stringify(maintenanceTickets));
-  }, [maintenanceTickets]);
+    if (currentUser && isCloudSyncReady) {
+      saveAllUserDocs('maintenanceTickets', maintenanceTickets, currentUser.uid);
+    }
+  }, [maintenanceTickets, currentUser, isCloudSyncReady]);
 
   useEffect(() => {
     localStorage.setItem('immogestion_transactions', JSON.stringify(transactions));
-  }, [transactions]);
+    if (currentUser && isCloudSyncReady) {
+      saveAllUserDocs('transactions', transactions, currentUser.uid);
+    }
+  }, [transactions, currentUser, isCloudSyncReady]);
 
   // Handlers
   const handleSaveProperty = (savedProperty: Property) => {
@@ -218,31 +303,53 @@ export default function App() {
   };
 
   const handleUpdatePaymentStatus = (paymentId: string, newStatus: 'Paid' | 'Late' | 'Pending') => {
+    let updatedPayment: PaymentRecord | undefined;
     setPayments((prev) =>
-      prev.map((p) =>
-        p.id === paymentId
-          ? {
-              ...p,
-              status: newStatus,
-              paidDate: newStatus === 'Paid' ? new Date().toISOString().split('T')[0] : undefined,
-            }
-          : p
-      )
+      prev.map((p) => {
+        if (p.id === paymentId) {
+          updatedPayment = {
+            ...p,
+            status: newStatus,
+            paidDate: newStatus === 'Paid' ? new Date().toISOString().split('T')[0] : undefined,
+          };
+          return updatedPayment;
+        }
+        return p;
+      })
     );
+    if (currentUser && updatedPayment) {
+      saveUserDoc('payments', paymentId, updatedPayment, currentUser.uid);
+    }
   };
 
   const handleAddTransaction = (newTx: FinancialTransaction) => {
     setTransactions((prev) => [newTx, ...prev]);
+    if (currentUser) {
+      saveUserDoc('transactions', newTx.id, newTx, currentUser.uid);
+    }
   };
 
   const handleAddMaintenanceTicket = (newTicket: MaintenanceTicket) => {
     setMaintenanceTickets((prev) => [newTicket, ...prev]);
+    if (currentUser) {
+      saveUserDoc('maintenanceTickets', newTicket.id, newTicket, currentUser.uid);
+    }
   };
 
   const handleUpdateTicketStatus = (ticketId: string, status: MaintenanceStatus) => {
+    let updatedTicket: MaintenanceTicket | undefined;
     setMaintenanceTickets((prev) =>
-      prev.map((t) => (t.id === ticketId ? { ...t, status } : t))
+      prev.map((t) => {
+        if (t.id === ticketId) {
+          updatedTicket = { ...t, status };
+          return updatedTicket;
+        }
+        return t;
+      })
     );
+    if (currentUser && updatedTicket) {
+      saveUserDoc('maintenanceTickets', ticketId, updatedTicket, currentUser.uid);
+    }
   };
 
   const handleOpenQuittance = (payment?: PaymentRecord) => {
@@ -258,12 +365,30 @@ export default function App() {
   const handleImportFullStateJson = (jsonStr: string) => {
     try {
       const data = JSON.parse(jsonStr);
-      if (data.properties) setProperties(data.properties);
-      if (data.tenants) setTenants(data.tenants);
-      if (data.payments) setPayments(data.payments);
-      if (data.maintenanceTickets) setMaintenanceTickets(data.maintenanceTickets);
-      if (data.transactions) setTransactions(data.transactions);
-      if (data.profile) setProfile(data.profile);
+      if (data.properties) {
+        setProperties(data.properties);
+        if (currentUser) saveAllUserDocs('properties', data.properties, currentUser.uid);
+      }
+      if (data.tenants) {
+        setTenants(data.tenants);
+        if (currentUser) saveAllUserDocs('tenants', data.tenants, currentUser.uid);
+      }
+      if (data.payments) {
+        setPayments(data.payments);
+        if (currentUser) saveAllUserDocs('payments', data.payments, currentUser.uid);
+      }
+      if (data.maintenanceTickets) {
+        setMaintenanceTickets(data.maintenanceTickets);
+        if (currentUser) saveAllUserDocs('maintenanceTickets', data.maintenanceTickets, currentUser.uid);
+      }
+      if (data.transactions) {
+        setTransactions(data.transactions);
+        if (currentUser) saveAllUserDocs('transactions', data.transactions, currentUser.uid);
+      }
+      if (data.profile) {
+        setProfile(data.profile);
+        if (currentUser) saveUserDoc('users', currentUser.uid, data.profile, currentUser.uid);
+      }
     } catch (err) {
       throw new Error('JSON invalide.');
     }
@@ -282,10 +407,25 @@ export default function App() {
     return (
       <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
         <LandingPageView
-          onEnterApp={(targetTab) => setActiveTab(targetTab || 'dashboard')}
+          onEnterApp={(targetTab) => handleNavigate(targetTab || 'dashboard')}
+          onOpenAuthModal={handleOpenAuthModal}
           properties={properties}
           onAddCandidateApplication={(candidate) => {
             alert(`✓ Candidature reçue pour ${candidate.propertyTitle} !\nNom : ${candidate.name}\nEmail : ${candidate.email}\nRevenus : ${candidate.incomeMonthly} €/mois`);
+          }}
+        />
+
+        {/* Global Auth Modal */}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          initialMode={authModalMode}
+          onSuccess={(demo) => {
+            if (demo) {
+              handleNavigate('dashboard');
+            } else {
+              handleNavigate('dashboard');
+            }
           }}
         />
       </div>
@@ -307,8 +447,9 @@ export default function App() {
         onOpenQuittanceModal={() => handleOpenQuittance()}
         pendingAlertsCount={unpaidCount + openMaintenanceCount}
         currentUser={currentUser}
-        onSignInGoogle={handleSignInGoogle}
+        onOpenAuthModal={handleOpenAuthModal}
         onLogout={handleLogout}
+        onBackToLanding={() => handleNavigate('landing')}
       />
 
       {/* Main Body Layout */}
@@ -320,6 +461,7 @@ export default function App() {
           setActiveTab={setActiveTab}
           unpaidCount={unpaidCount}
           openMaintenanceCount={openMaintenanceCount}
+          onBackToLanding={() => handleNavigate('landing')}
         />
 
         {/* Dynamic View Panel */}
@@ -444,6 +586,10 @@ export default function App() {
             setSelectedProperty(null);
             handleOpenQuittance();
           }}
+          onUpdateProperty={(updatedProp) => {
+            handleSaveProperty(updatedProp);
+            setSelectedProperty(updatedProp);
+          }}
         />
       )}
 
@@ -466,6 +612,20 @@ export default function App() {
         properties={properties}
         tenants={tenants}
         paymentToGenerate={selectedPaymentForQuittance}
+      />
+
+      {/* 4. Global Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode={authModalMode}
+        onSuccess={(demo) => {
+          if (demo) {
+            handleNavigate('dashboard');
+          } else {
+            handleNavigate('dashboard');
+          }
+        }}
       />
 
     </div>

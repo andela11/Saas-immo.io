@@ -9,7 +9,8 @@ import {
   MapPin,
   Calculator,
   Settings,
-  Globe
+  Globe,
+  ArrowLeft
 } from 'lucide-react';
 import { ActiveTab } from '../types';
 
@@ -18,6 +19,7 @@ interface SidebarProps {
   setActiveTab: (tab: ActiveTab) => void;
   unpaidCount: number;
   openMaintenanceCount: number;
+  onBackToLanding?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -25,14 +27,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   unpaidCount,
   openMaintenanceCount,
+  onBackToLanding,
 }) => {
   const menuItems = [
-    {
-      id: 'landing' as ActiveTab,
-      label: 'Page Vitrine / Landing',
-      icon: Globe,
-      badge: { count: 'Public', color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
-    },
     {
       id: 'dashboard' as ActiveTab,
       label: 'Tableau de bord',
@@ -91,10 +88,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside className="w-full lg:w-64 bg-slate-900 border-r border-slate-800 text-slate-300 flex-shrink-0">
+    <aside className="w-full lg:w-64 bg-slate-900 border border-slate-800 rounded-2xl text-slate-300 flex-shrink-0 overflow-hidden shadow-lg">
       
-      {/* Mobile Horizontal Navigation Bar */}
-      <div className="lg:hidden flex overflow-x-auto p-2 space-x-1 border-b border-slate-800 no-scrollbar">
+      {/* Mobile Horizontal Scrollable Navigation Bar */}
+      <div className="lg:hidden flex items-center overflow-x-auto p-2.5 space-x-1.5 border-b border-slate-800 no-scrollbar">
+        <button
+          onClick={() => {
+            if (onBackToLanding) onBackToLanding();
+            else setActiveTab('landing');
+          }}
+          className="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-emerald-400 border border-slate-700 whitespace-nowrap flex-shrink-0"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Retour Site</span>
+        </button>
+
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -102,13 +110,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+              className={`flex items-center space-x-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
                 isActive
-                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                  : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200'
+                  ? 'bg-emerald-500 text-slate-950 font-black shadow-md'
+                  : 'bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-slate-700/50'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400' : ''}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
               <span>{item.label}</span>
             </button>
           );
@@ -116,10 +124,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Desktop Vertical Navigation Menu */}
-      <div className="hidden lg:flex flex-col h-full p-4 justify-between">
+      <div className="hidden lg:flex flex-col h-full p-4 justify-between space-y-6">
         <nav className="space-y-1.5">
-          <div className="px-3 py-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-            Menu Principal
+          
+          {/* Back to Public Landing Link */}
+          <button
+            onClick={() => {
+              if (onBackToLanding) onBackToLanding();
+              else setActiveTab('landing');
+            }}
+            className="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition-all mb-3 group"
+          >
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+            <span>← Page d'Accueil Public</span>
+          </button>
+
+          <div className="px-3 py-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+            Menu Navigation
           </div>
 
           {menuItems.map((item) => {
@@ -134,7 +155,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   isActive
                     ? item.highlight
                       ? 'bg-purple-600/20 text-purple-300 border border-purple-500/40 shadow-sm'
-                      : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-semibold shadow-sm'
+                      : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold shadow-sm'
                     : item.highlight
                     ? 'hover:bg-purple-950/40 text-purple-300/80 hover:text-purple-200 border border-purple-900/30'
                     : 'hover:bg-slate-800/80 text-slate-400 hover:text-slate-100'
@@ -168,10 +189,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         {/* Footer Portfolio Mini Summary */}
-        <div className="mt-8 p-3.5 rounded-xl bg-slate-800/50 border border-slate-700/50 text-xs">
-          <div className="flex items-center justify-between text-slate-400 mb-1">
+        <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 text-xs space-y-1">
+          <div className="flex items-center justify-between text-slate-400">
             <span>Statut du Serveur</span>
-            <span className="flex items-center space-x-1 text-emerald-400 font-semibold">
+            <span className="flex items-center space-x-1 text-emerald-400 font-bold">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span>En Ligne</span>
             </span>

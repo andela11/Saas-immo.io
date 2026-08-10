@@ -3,6 +3,9 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
   signOut,
   onAuthStateChanged,
   User,
@@ -61,7 +64,22 @@ export const logoutUser = async () => {
   }
 };
 
-export { onAuthStateChanged };
+// Sign in with Email and Password
+export const signInWithEmail = async (email: string, pass: string) => {
+  const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+  return userCredential.user;
+};
+
+// Register with Email, Password & Display Name
+export const registerWithEmail = async (email: string, pass: string, fullName: string) => {
+  const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+  if (userCredential.user && fullName) {
+    await updateProfile(userCredential.user, { displayName: fullName });
+  }
+  return userCredential.user;
+};
+
+export { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword };
 export type { User };
 
 // Firestore CRUD Helpers
@@ -105,6 +123,20 @@ export const saveUserDoc = async (collectionName: string, docId: string, data: a
     await setDoc(docRef, { ...data, userId }, { merge: true });
   } catch (err) {
     console.error(`Error saving to ${collectionName}:`, err);
+  }
+};
+
+export const saveAllUserDocs = async (collectionName: string, items: any[], userId: string) => {
+  if (!userId || !Array.isArray(items)) return;
+  try {
+    const promises = items.map((item) => {
+      if (!item.id) return Promise.resolve();
+      const docRef = doc(db, collectionName, item.id);
+      return setDoc(docRef, { ...item, userId }, { merge: true });
+    });
+    await Promise.all(promises);
+  } catch (err) {
+    console.error(`Error saving all docs to ${collectionName}:`, err);
   }
 };
 

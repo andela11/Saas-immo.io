@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Wrench,
   Plus,
@@ -9,7 +9,10 @@ import {
   User,
   Building2,
   X,
-  Search
+  Search,
+  Upload,
+  Image as ImageIcon,
+  Trash2
 } from 'lucide-react';
 import { MaintenanceTicket, MaintenanceStatus, MaintenancePriority, Property, Tenant } from '../types';
 
@@ -41,6 +44,24 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
     contractorPhone: '',
   });
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleTicketFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Veuillez choisir un fichier image.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setFormData((prev) => ({ ...prev, imageUrl: event.target?.result as string }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.propertyId) return;
@@ -55,6 +76,7 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
       priority: formData.priority || 'Medium',
       status: formData.status || 'New',
       createdAt: new Date().toISOString().split('T')[0],
+      imageUrl: formData.imageUrl,
       estimatedCost: Number(formData.estimatedCost) || 0,
       contractorName: formData.contractorName,
       contractorPhone: formData.contractorPhone,
@@ -134,6 +156,17 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
 
                       <h4 className="font-bold text-white text-sm">{ticket.title}</h4>
                       <p className="text-xs text-slate-300 line-clamp-2">{ticket.description}</p>
+                      
+                      {ticket.imageUrl && (
+                        <div className="relative h-28 rounded-lg overflow-hidden border border-slate-700/80 my-1">
+                          <img
+                            src={ticket.imageUrl}
+                            alt={ticket.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+
                       <p className="text-[11px] text-emerald-400 font-medium truncate">{property?.title}</p>
 
                       {ticket.contractorName && (
@@ -244,6 +277,59 @@ export const MaintenanceView: React.FC<MaintenanceViewProps> = ({
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full bg-slate-800 text-white text-xs p-2.5 rounded-lg border border-slate-700"
                 />
+              </div>
+
+              {/* Photo attachment from local device */}
+              <div>
+                <label className="block text-xs text-slate-300 mb-1 flex items-center justify-between">
+                  <span className="flex items-center space-x-1">
+                    <ImageIcon className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Photo / Justificatif Visuel</span>
+                  </span>
+                  <span className="text-[10px] text-slate-500">Depuis votre appareil</span>
+                </label>
+                
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleTicketFileChange}
+                  className="hidden"
+                />
+
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border border-dashed border-slate-700 hover:border-emerald-500/50 bg-slate-800/60 p-2.5 rounded-lg text-center cursor-pointer transition-colors flex items-center justify-between"
+                >
+                  {formData.imageUrl ? (
+                    <div className="flex items-center space-x-2.5 w-full">
+                      <img
+                        src={formData.imageUrl}
+                        alt="Photo jointe"
+                        className="w-10 h-10 object-cover rounded-md border border-slate-700 flex-shrink-0"
+                      />
+                      <div className="text-left flex-1 min-w-0">
+                        <span className="text-xs text-emerald-400 font-bold block">Photo locale jointe ✓</span>
+                        <span className="text-[10px] text-slate-400 block truncate">Cliquer pour remplacer</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFormData((prev) => ({ ...prev, imageUrl: undefined }));
+                        }}
+                        className="p-1.5 rounded text-slate-400 hover:text-rose-400"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center space-x-2 w-full text-slate-400 py-1">
+                      <Upload className="w-4 h-4 text-emerald-400" />
+                      <span className="text-xs font-semibold text-slate-300">Importer une photo (PC / Mobile)</span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
